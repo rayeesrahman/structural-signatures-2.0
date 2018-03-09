@@ -375,8 +375,12 @@ sub domain_analysis
         interpro_family, 
         interpro_subfamily_desc ,
         interpro_family_desc  from domain where uid like ? ") ; 
+        my $cccc =1 ; 
     foreach (@uid)
     {
+        say "extracting $cccc of " , scalar @uid ,  " domains" ;
+        $cccc++; 
+        $_ =~ s/\r|\n//gi ; 
         $sth->execute($_); 
         my ($uid, $idoma , $ifam , $idomad , $ifamd ) = $sth->fetchrow_array() ; 
         if ( not defined $uid )
