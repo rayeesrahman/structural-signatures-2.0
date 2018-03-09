@@ -83,6 +83,7 @@ sub get_uid
     my $sth = $dbh->prepare($query) ; 
     my @uid ; 
     my $notfound = 0 ;  
+    say "Converting genenames to uniprot ids" ;
     foreach (@names )
     {
         my $q = "%" . $_ . "%" ; 
