@@ -116,7 +116,7 @@ sub fold_analysis
     foreach (@uid)
     {
         
-        say "extracting $cccc of " , scalar @uid ,  " folds" ;
+        say "extracting $cccc of " , scalar @uid ,  " proteins" ;
         $cccc++; 
         $_ =~ s/\r|\n//gi ; 
         $sth1->execute($_) ; 
@@ -378,7 +378,7 @@ sub domain_analysis
         my $cccc =1 ; 
     foreach (@uid)
     {
-        say "extracting $cccc of " , scalar @uid ,  " domains\r" ;
+        say "extracting $cccc of " , scalar @uid ,  " proteins\r" ;
         $cccc++; 
         $_ =~ s/\r|\n//gi ; 
         $sth->execute($_); 
