@@ -378,7 +378,7 @@ sub domain_analysis
         my $cccc =1 ; 
     foreach (@uid)
     {
-        print "extracting $cccc of " , scalar @uid ,  " domains\r" ;
+        say "extracting $cccc of " , scalar @uid ,  " domains\r" ;
         $cccc++; 
         $_ =~ s/\r|\n//gi ; 
         $sth->execute($_); 
