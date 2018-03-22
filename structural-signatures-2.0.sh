@@ -33,14 +33,37 @@ then
 	printf "$u" ;
 	exit  1
 fi
-numgenes=$( wc -l $input ) 
-$homed/bin/scripts/get_struct_from_db.pl $homed/database/structure_database.db $type $name $homed/bin/files/parentchild.txt $input $output  2> log.txt 
+numgenes=$( wc -l $input | cut -f1 -d " " ) 
+$homed/bin/scripts/get_struct_from_db.pl $homed/database/structure_database.db $type $name $homed/bin/files/parentchild.txt $input $output  2> /dev/null
 
-#if [ $type == "domain"] || [ $type == "both" ]
-#then
-#	$homed/bin/scripts/compute_representation.R $output.domain.cnt $homed/bin/files/backgrounds/default.background.ipr.domain.cnt 
-#fi
-
+if [ $type == "domain" ] 
+then
+	$homed/bin/scripts/compute_representation.R $output.domain.cnt $homed/bin/files/backgrounds/default.background.ipr.domain.cnt $numgenes $output domain
+elif [ $type == "fold" ]
+then
+	cat ./$output.scop.fold.cnt | cut -f1,2 -d"," > tmp.fold 
+	$homed/bin/scripts/compute_representation.R tmp.fold $homed/bin/files/backgrounds/default.background.scop.fold.cnt.2 $numgenes $output fold
+	rm ./tmp.fold
+	cat ./$output.scop.superfam.cnt | cut -f1,2 -d"," > tmp.superfam
+	$homed/bin/scripts/compute_representation.R tmp.superfam $homed/bin/files/backgrounds/default.background.scop.superfam.cnt.2 $numgenes $output superfam
+	rm ./tmp.superfam 
+	cat ./$output.scop.family.cnt | cut -f1,2 -d"," > tmp.fam
+	$homed/bin/scripts/compute_representation.R tmp.fam $homed/bin/files/backgrounds/default.background.scop.family.cnt.2 $numgenes $output family
+	rm ./tmp.fam
+else 
+	$homed/bin/scripts/compute_representation.R $output.domain.cnt $homed/bin/files/backgrounds/default.background.ipr.domain.cnt $numgenes $output domain
+	cat ./$output.scop.fold.cnt | cut -f1,2 -d"," > tmp.fold 
+	$homed/bin/scripts/compute_representation.R tmp.fold $homed/bin/files/backgrounds/default.background.scop.fold.cnt.2 $numgenes $output fold
+	rm ./tmp.fold
+	cat ./$output.scop.superfam.cnt | cut -f1,2 -d"," > tmp.superfam
+	$homed/bin/scripts/compute_representation.R tmp.superfam $homed/bin/files/backgrounds/default.background.scop.superfam.cnt.2 $numgenes $output superfam
+	rm ./tmp.superfam 
+	cat ./$output.scop.family.cnt | cut -f1,2 -d"," > tmp.fam
+	$homed/bin/scripts/compute_representation.R tmp.fam $homed/bin/files/backgrounds/default.background.scop.family.cnt.2 $numgenes $output family
+	rm ./tmp.fam
+fi
+mv ./*.csv output/enrichments/
+mv ./*.cnt output/counts
 exit ; 
 
 
