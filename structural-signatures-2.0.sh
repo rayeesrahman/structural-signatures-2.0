@@ -12,11 +12,43 @@
 ### Environment Variables:       ###
 ####################################
 
-while getopts ":i:t:n:d:b:f:g:T:p:lh:e:P:y:c:zh:" opt; do
+##for folds clean input (',',":","'', '""'")
+
+homed=/mnt/c/Users/Ray/Documents/schlesslab/lincs/Structural_Signatures_2.0/
+u="Usage:\n\t -i input gene list \n\t -t domain enrichment (domain) scop enrichment (fold) or both (both) \n\t -n name type: gene name (gn) or uniprot id (uid)\n\t -o output file name \n\n)";  
+while getopts ":i:o:t:n:d:b:f:g:T:p:lh:e:P:y:c:zh:" opt; do
     case $opt in
 		i) 	input=$OPTARG ;;  #input
 		t) 	type=$OPTARG ;; #domain or fold 
-        n)  name=$OPTARG ;; #gene name (gn), uid or entry name (en)
+        n)  name=$OPTARG ;; #gene name (gn) or uid (uid) 
+		o)  output=$OPTARG ;; #output file name 
+        \?)
+        printf "$" 
+        exit 1 ;;
+    esac
+done
+
+if [ -z $input ] || [ -z $type ] || [ -z $name ] || [ -z $output ]
+then
+	printf "$u" ;
+	exit  1
+fi
+numgenes=$( wc -l $input ) 
+$homed/bin/scripts/get_struct_from_db.pl $homed/database/structure_database.db $type $name $homed/bin/files/parentchild.txt $input $output  2> log.txt 
+
+#if [ $type == "domain"] || [ $type == "both" ]
+#then
+#	$homed/bin/scripts/compute_representation.R $output.domain.cnt $homed/bin/files/backgrounds/default.background.ipr.domain.cnt 
+#fi
+
+exit ; 
+
+
+
+exit ;
+
+
+
 		T) 	thres=$OPTARG ;;
         b)  numbootstraps=$OPTARG  ;;
         n)  name=$OPTARG   ;;
@@ -30,14 +62,6 @@ while getopts ":i:t:n:d:b:f:g:T:p:lh:e:P:y:c:zh:" opt; do
 		P) 	pthres=$OPTARG ;;
 		y) 	prob=$OPTARG ;;
 		c) 	cover=$OPTARG ;;
-        \?) 
-        printf "$usage"
-        exit 1 ;;
-    esac
-done
-./bin/scripts/get_struct_from_db.pl $database $type $name parentchild.txt $input 
-exit ;
-
 IUPRED=./iupred_predictions
 PROF=./human_predict_protein
 HHR=./human_proteome_hhpred
@@ -71,7 +95,6 @@ printf "Working Directory: $DIR \n"
 ####################################
 ### Variables:                   ###
 ####################################
-usage="Usage:\n\t -d Dataset \n\t\t*required* \n\t -n Name (prefix) for output files  \n\t\t*required* \n\t -b number of Bootstraps \n\t\t<default 0> \n\t -g number of differencially expressed Genes sorted by p-value \n\t\t<default all differencitally expressed genes>\n\t -p number of Parallel bootstraps to run\n\t\t<default 1>\n\t -l switch if gene List is being used instead of DToXs data\n\t\t*required if a gene list is being used*\n\t -t Type of genes in DToXs data <OVER> <UNDER> <BOTH>\n\t\t*Required if input is DToXs*\n\t -h print Help\n\n"
 helpout="Help:
 	-d: data can be either DToXs data (expected default) or gene list
 	    	*if data is a gene list then -l must be called*
