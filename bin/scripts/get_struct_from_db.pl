@@ -1,17 +1,38 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 use strict ; 
 use 5.10.1 ; 
 use DBI ;
+use  Parallel::ForkManager ;
+###helps 
 my $optional = "####optional minimal thresholds for idenitifying folds####\n" .
     " length: arg 6 | default:30\n probablity: arg 7 | default:50\n overlapp coverage: arg 8 | default:0.8\n pvalue: arg 9 | default:1e-5\n" .
     " evalue: arg 10 | default:1e-5\n percent idenitity: arg 11 | default:0.3\n coverage with template: arg 12 | default:0.3\n" ;
-my $help = "need structure_database.db as arg 1\nneed type: [domain] or [fold] or [both] as arg 2\nneed protein name type:\n\tuniprot id: [uid] or\n\tgene name: [gn]\nas arg 3\nneed ParentChildTreeFile.txt as arg 4\nneed input genelist as arg 5\n$optional" ; 
+my $help = "    need structure_database.db as arg 1
+    need type: [domain] or [fold] or [both] as arg 2
+    need protein name type: uniprot id: [uid] or  tgene name: [gn] as arg 3
+    need ParentChildTreeFile.txt as arg 4
+    need input genelist as arg 5
+    need output file name as arg 6
+    need available uniprot ids as arg 7" ; 
+##inputs 
 my $dbfile = shift || die "$help" ; 
-my $type = shift || die "need type: [domain] or [fold] as arg 2 " ; 
+my $type = shift || die "need type: [domain] or [fold] or [both] as arg 2 " ; 
 my $name = shift || die "need protein name type:\n\tuniprot id: [uid] or\n\tgene name: [gn]\nas arg 3 " ; 
 my $interpro_tree = shift || die "need ParentChildTreeFile.txt as arg 4" ; 
 my $input = shift || die "need genelist as arg 5" ; 
-my $fn = shift || die "need output file name as arg 5" ; 
+my $fn = shift || die "need output file name as arg 6" ;
+my $avail_uid = shift || die "need available uniprot ids as arg 7" ; 
+my $remove_dup = shift || die "remove duplicate proteins from gene names? yes or no as arg 8" ; 
+open(AVAI, "<$avail_uid") ;
+my %avail ;
+while(<AVAI>)
+{
+    chomp ; 
+    $_ =~ s/\r|\n//g;
+    $avail{$_} = 1; 
+}
+close(AVAI) ; 
+##database 
 my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile","","");
 ###optional parameters 
 my $len = shift @ARGV || 30 ; #template length threshold arg 7
@@ -21,6 +42,10 @@ my $pvalue = shift @ARGV || 1e-5 ; #template pvalue threshold arg 10
 my $evalue = shift @ARGV || 1e-5 ; #template evalue threshold arg 11
 my $pid = shift @ARGV || 0.3  ; #template percent identity threshold arg 12  
 my $cov = shift @ARGV || .3 ; #template percent identity threshold arg 13 
+my $maxproc = 25 ;
+##mpi 
+my $pm = new Parallel::ForkManager(4);
+$pm->set_max_procs($maxproc);
 open(IN, "<$input") ;
 my @names ; 
 while(<IN>)
@@ -29,7 +54,6 @@ while(<IN>)
     push @names , $_ ; 
 } 
 my @uid ; 
-
 #####Convert names into uid 
 if ($name=~ "gn")
 {
@@ -41,8 +65,28 @@ elsif ($name =~ "uid")
 {
     @uid = @names ; 
 }
-my %uid = map {$_ => 1} @uid ;
-@uid = keys %uid ; 
+if ( $remove_dup eq "yes") 
+{
+    my %uid = map {$_ => 1} @uid ;
+    @uid = keys %uid ; 
+}
+my @uidf ; 
+##checks if uids are available ; 
+foreach (@uid)
+{
+    chomp ;
+    $_ =~ s/\r|\n//g; 
+    if (exists $avail{$_})
+    {
+        push @uidf , $_ ;
+    } 
+}
+
+say "Found: " , scalar(@uidf) , " out of " , scalar(@names)  , " in database" ;
+@uid = @uidf ; 
+open(FOUND, ">$fn.found.genes") ; 
+say FOUND scalar(@uid);
+close (FOUND) ; 
 #####Get structure counts 
 if ($type =~ "domain" )
 {
@@ -80,28 +124,30 @@ else
 sub get_uid 
 {
     my $query = shift ; 
-    my $sth = $dbh->prepare($query) ; 
-    my @uid ; 
-    my $notfound = 0 ;  
+    open (TMP , ">>$fn.uid.converted"); 
     say "Converting genenames to uniprot ids" ;
     foreach (@names )
-    {
+    {  
+        $pm->start and next;
+        my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile","","");
+        my $sth = $dbh->prepare($query) ; 
         my $q = "%" . $_ . "%" ; 
         $sth->execute($q); 
         my $uid = $sth->fetchrow_array() ; 
         if (defined $uid )
-        {
-            push @uid, $uid; 
+        {   
+            say TMP $uid ; 
         }
         else 
         {
             print STDERR "$_ was not found in the database\n" ; 
-            $notfound++ ; 
         }
+        $pm->finish;
     }
-    my $found = scalar @names - $notfound ; 
-    my $percentfound = ($found / scalar @names ) * 100; 
-    say STDERR "Percent of Input Gene Names Analyzed : $percentfound %" ;
+    $pm->wait_all_children;
+    open(UID, "<./$fn.uid.converted") ; 
+    my @uid =  <UID> ; 
+    system("rm ./$fn.uid.converted") ;
     return @uid ; 
 }
 
@@ -117,11 +163,11 @@ sub fold_analysis
     foreach (@uid)
     {
         
-        say "extracting $cccc of " , scalar @uid ,  " proteins" ;
+        say  "extracting $cccc of " , scalar @uid ,  " proteins" ;
         $cccc++; 
         $_ =~ s/\r|\n//gi ; 
         $sth1->execute($_) ; 
-        my $cnt_uid = $sth1->fetchrow_array() ; #number of folds 
+        my $cnt_uid = $sth1->fetchrow_array() ; #number of folds
         next unless $cnt_uid > 0 ; #each fold row in db 
         $sth2->execute($_) ;
         my %folds ;  
@@ -195,28 +241,28 @@ sub fold_analysis
     {
         if ($type =~ m/^class/)
         {
-            foreach my $feat ( keys $famcnts{$type})
+            foreach my $feat ( keys %{$famcnts{$type}})
             {
                 say CL  $feat . "," . $famcnts{$type}{$feat}{'cnt'} , "," ,$famcnts{$type}{$feat}{'desc'} ; 
             }
         }
         if ($type =~ m/^fold/)
         {
-            foreach my $feat ( keys $famcnts{$type})
+            foreach my $feat ( keys %{$famcnts{$type}})
             {
                 say F $feat . "," . $famcnts{$type}{$feat}{'cnt'} , "," ,$famcnts{$type}{$feat}{'desc'} ; 
             }
         }
         if ($type =~ m/^sfam/)
         {
-            foreach my $feat ( keys $famcnts{$type})
+            foreach my $feat ( keys %{$famcnts{$type}})
             {
                 say S $feat . "," . $famcnts{$type}{$feat}{'cnt'} , "," ,$famcnts{$type}{$feat}{'desc'} ; 
             }
         }
         if ($type =~ m/^fam/)
         {
-            foreach my $feat ( keys $famcnts{$type})
+            foreach my $feat ( keys %{$famcnts{$type}})
             {
                 say FA $feat . "," . $famcnts{$type}{$feat}{'cnt'} , ",", $famcnts{$type}{$feat}{'desc'} ; 
             }
@@ -379,7 +425,7 @@ sub domain_analysis
         my $cccc =1 ; 
     foreach (@uid)
     {
-        say "extracting $cccc of " , scalar @uid ,  " proteins\r" ;
+        #say "extracting $cccc of " , scalar @uid ,  " proteins" ;
         $cccc++; 
         $_ =~ s/\r|\n//gi ; 
         $sth->execute($_); 
