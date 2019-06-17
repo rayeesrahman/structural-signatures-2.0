@@ -14,8 +14,14 @@
 
 ##for folds clean input (',',":","'', '""'")
 
-#homed=/home/rrahman/structural-signatures-2.0/
-homed=/mnt/c/Users/Ray/Documents/schlesslab/lincs/Structural_Signatures_2.0/
+if [ -e ./install.directory ]
+then
+	DIR=$( cat ./install.directory ) ;
+	IUPRED=$( printf "$DIR/Database/iupred/iupred_predictions" )  ;
+	PROF=/$( printf "$DIR/Database/human_predict_protein/human_predict_protein" ) ;
+	HHR=$( printf "$DIR/Database/human_proteome_hhpred" );
+	SECSTRUCT=$( printf $DIR );
+fi
 
 u="Usage:\n\t -i input gene list \n\t -t domain enrichment (domain) scop enrichment (fold) or both (both)
  \n\t -n name type: gene name (gn) or uniprot id (uid)\n\t -o output file name \n\n)";  
@@ -94,14 +100,7 @@ HHR=./human_proteome_hhpred
 SECSTUCT=.
 DIR=.
 
-if [ -e ./install.directory ]
-then
-	DIR=$( cat ./install.directory ) ;
-	IUPRED=$( printf "$DIR/Database/iupred/iupred_predictions" )  ;
-	PROF=/$( printf "$DIR/Database/human_predict_protein/human_predict_protein" ) ;
-	HHR=$( printf "$DIR/Database/human_proteome_hhpred" );
-	SECSTRUCT=$( printf $DIR );
-fi
+
 if [ ! -d $DIR ] || [ ! -d $IUPRED ] || [ ! -d $PROF ] || [ ! -d $HHR ] || [ ! -d $SECSTUCT ]
 then
 	printf "In order run structural_signatures.sh you must specify these directories in this script:\n\t\$IUPRED directory to IUPRED predictions\n\t\$PROF directory to predict protein predictions\n\t\$HHR directory to hhpred output\n\t\$SECSTUCT directory to secstruct.sh\nPlease edit secstruct.sh to include these directories\n"
