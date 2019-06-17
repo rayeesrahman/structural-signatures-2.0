@@ -16,11 +16,7 @@
 
 if [ -e ./install.directory ]
 then
-	DIR=$( cat ./install.directory ) ;
-	IUPRED=$( printf "$DIR/Database/iupred/iupred_predictions" )  ;
-	PROF=/$( printf "$DIR/Database/human_predict_protein/human_predict_protein" ) ;
-	HHR=$( printf "$DIR/Database/human_proteome_hhpred" );
-	SECSTRUCT=$( printf $DIR );
+	homed=$( cat ./install.directory ) ;
 fi
 
 u="Usage:\n\t -i input gene list \n\t -t domain enrichment (domain) scop enrichment (fold) or both (both)
