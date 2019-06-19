@@ -16,12 +16,20 @@
 
 if [ -z "$homed" ]; 
 then 
-	printf "\nThe variable: homed needs to be defined, please define the variable as such:\n\n\033[34mexport homed='/path/to/structural-signatures' >> ~/.bashrc \n\n"; 
+	printf "\nThe variable: homed needs to be defined, please define the variable as such:\n\n\033[34mecho 'export homed="/path/to/structural-signatures"' >> ~/.bashrc \n\n\033[0m"; 
 	exit  
 else 
 	printf "\nInstallation directory:\n\t\033[34m$homed\n\n\033[0m"
 fi
 
+db=$homed/database/structure_database.db 
+if [[ -f "$db" ]]
+then
+	printf "\nStructure database located at:\n\t\033[33m$db\n\n\033[0m"
+else 
+	printf "\n\033[31mStructure database not found, please untar the structure database in:\n\t$homed/database/\n\033[0m\n"
+	exit 
+fi  
 u="Usage:\n\t -i input gene list \n\t -t domain enrichment (domain) scop enrichment (fold) or both (both)
  \n\t -n name type: gene name (gn) or uniprot id (uid)\n\t -o output file name \n\n)";  
 while getopts ":i:o:t:n:d:b:f:g:T:p:lh:e:P:y:c:zh:" opt; do
