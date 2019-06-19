@@ -26,3 +26,10 @@ Perl DBI
 Perl Parrallel Fork Manager
 
 sqlite >3.0
+
+## To Do: 
+- [ ] Make an installation script 
+- [ ] Backport `tructural-signatures-1.0 features`(disordered regions, 2D protein feature enrichment, etc
+- [ ] Multiprocessing of protein structure extraction (currently runs one at a time) 
+- [ ] Dockerize 
+- [ ] Add various error tests 
