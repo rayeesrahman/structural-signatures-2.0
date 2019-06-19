@@ -14,16 +14,12 @@
 
 ##for folds clean input (',',":","'', '""'")
 
-if [ -e ./install.directory ]
-then
-	homed=$( cat ./install.directory ) ;
-	echo "Installation directory:
-	$homed"
+if [ -z "$homed" ]; 
+then 
+	printf "\nThe variable: homed needs to be defined, please define the variable as such:\n\n\033[34mexport homed='/path/to/structural-signatures' >> ~/.bashrc \n\n"; 
+	exit  
 else 
-	homed="c/Users/rayee/Documents/schlesslab/github/2-structural-signatures"
-	homed="/sc/orga/projects/schlea02a/rrahman/Structural_Signatures_2.0-dev"
-	echo "Installation directory:
-	$homed"
+	printf "\nInstallation directory:\n\t\033[34m$homed\n\n\033[0m"
 fi
 
 u="Usage:\n\t -i input gene list \n\t -t domain enrichment (domain) scop enrichment (fold) or both (both)
