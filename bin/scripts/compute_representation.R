@@ -39,7 +39,7 @@ for ( i in 1:nrow(counted.frequencies)){
     pv = c(pv,pvalue)
     pco = c(pco, pvalue.corrected)
     folc = c(folc, fc )
-    print(paste(ipr, cnt , bg.cnt , number.proteins , count.proteome ,pvalue, pvalue.corrected, fc  , sep = " ")) 
+#    print(paste(ipr, cnt , bg.cnt , number.proteins , count.proteome ,pvalue, pvalue.corrected, fc  , sep = " ")) 
 }
 fdr = as.numeric(as.character(p.adjust(as.numeric(as.character(pv)), method = "fdr")))
 se = seq(1,length(ip), by = 1 )
