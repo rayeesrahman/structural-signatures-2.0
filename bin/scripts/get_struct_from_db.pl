@@ -84,6 +84,8 @@ foreach (@uid)
 
 say "Found: " , scalar(@uidf) , " out of " , scalar(@names)  , " in database" ;
 @uid = @uidf ; 
+open(STRUCT_INFO, ">>$fn.scop.structure.info.csv");
+open(DOMAIN_INFO, ">>$fn.ipr.info.csv"); 
 open(FOUND, ">$fn.found.genes") ; 
 say FOUND scalar(@uid);
 close (FOUND) ; 
@@ -147,7 +149,7 @@ sub get_uid
     $pm->wait_all_children;
     open(UID, "<./$fn.uid.converted") ; 
     my @uid =  <UID> ; 
-    system("rm ./$fn.uid.converted") ;
+    #system("rm ./$fn.uid.converted") ;
     return @uid ; 
 }
 
@@ -160,10 +162,11 @@ sub fold_analysis
     "\tevalue: $evalue, percent idenitity: $pid, coverage with template: $cov\n" ; 
     my %famcnts ;
     my $cccc = 1 ;  
+    my @identified_folds ; 
     foreach (@uid)
     {
         
-        say  "extracting $cccc of " , scalar @uid ,  " proteins" ;
+        print  "extracting $cccc of " , scalar @uid ,  " proteins\n" ;
         $cccc++; 
         $_ =~ s/\r|\n//gi ; 
         $sth1->execute($_) ; 
@@ -180,6 +183,9 @@ sub fold_analysis
             }
             else 
             {
+		my $line_info =join( ',', @row[2,3,4,5,6,7,8,9,10] ) ;
+		my $line = $_ .  "," .  $line_info ; 
+		say STRUCT_INFO $line ; 
                 $folds{$row[8]}{'class'} = $row[2] ; 
                 $folds{$row[8]}{'class_d'} = $row[3] ; 
                 $folds{$row[8]}{'fold'} = $row[4] ; 
@@ -285,6 +291,10 @@ sub eval_fold
     foreach my $fold ( sort { $hash{$b}{'col'} <=>  $hash{$a}{'col'}}  keys %hash)
     {  
         ##check minimum thresholds: 
+	if ( not defined $hash{$fold}{'stop'} or not defined  $hash{$fold}{'start'}  )
+	{
+	    next ; 
+	}
         my $aln = $hash{$fold}{'stop'} - $hash{$fold}{'start'}  ; 
         next unless ($aln >= $len && $hash{$fold}{'prob'} >= $prob && $hash{$fold}{'ev'} <= $evalue && $hash{$fold}{'pv'} <= $pvalue && $hash{$fold}{'pid'} >= $pid && $hash{$fold}{'cov'}  >= $cov ); 
         push @fold , $fold ; 
@@ -435,6 +445,7 @@ sub domain_analysis
             $domain_count{'No-Domain'}++ ; 
             next ;
         }
+	say DOMAIN_INFO $uid ."," .$idoma . ",".  $ifam . "," . $idomad . ",". $ifamd ; 
         if ( $idoma =~ m/NULL/ )
         {
             if ( $ifam =~ m/NULL/ )

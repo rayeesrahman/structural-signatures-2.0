@@ -21,6 +21,7 @@ then
 	$homed"
 else 
 	homed="c/Users/rayee/Documents/schlesslab/github/2-structural-signatures"
+	homed="/sc/orga/projects/schlea02a/rrahman/Structural_Signatures_2.0-dev"
 	echo "Installation directory:
 	$homed"
 fi
@@ -63,11 +64,13 @@ then
 	Rscript $homed/bin/scripts/compute_representation.R $output.tmp.superfam $homed/bin/files/backgrounds/default.background.scop.superfam.cnt.2 $numgenes $output superfam  #2> /dev/null
 	rm ./$output.tmp.superfam 
 	rm ./$output.scop.superfam.cnt
+	cat ./$output.scop.family.cnt 
 	cat ./$output.scop.family.cnt | cut -f1,2 -d"," > $output.tmp.fam
 	Rscript $homed/bin/scripts/compute_representation.R $output.tmp.fam $homed/bin/files/backgrounds/default.background.scop.family.cnt.2 $numgenes $output family  #2> /dev/null
-	rm ./$output.tmp.fam
-	rm ./$output.scop.family.cnt
-	rm $output.found.genes
+	#rm ./$output.tmp.fam
+	#rm ./$output.scop.family.cnt
+	#rm $output.found.genes
+	rm ./$output.scop.class.cnt
 else 
 	Rscript $homed/bin/scripts/compute_representation.R $output.domain.cnt $homed/bin/files/backgrounds/default.background.ipr.domain.cnt $numgenes $output domain  #2> /dev/null
 	rm $output.domain.cnt
@@ -79,11 +82,13 @@ else
 	Rscript $homed/bin/scripts/compute_representation.R $output.tmp.superfam $homed/bin/files/backgrounds/default.background.scop.superfam.cnt.2 $numgenes $output superfam  #2> /dev/null
 	rm ./$output.tmp.superfam 
 	rm ./$output.scop.superfam.cnt 
+	cat ./$output.scop.family.cnt 
 	cat ./$output.scop.family.cnt | cut -f1,2 -d"," > $output.tmp.fam
 	Rscript $homed/bin/scripts/compute_representation.R $output.tmp.fam $homed/bin/files/backgrounds/default.background.scop.family.cnt.2 $numgenes $output family #2> /dev/null
-	rm ./$output.tmp.fam
-	rm ./$output.scop.family.cnt
-	rm $output.found.genes
+	#rm ./$output.tmp.fam
+	#rm ./$output.scop.family.cnt
+	#rm $output.found.genes
+	rm ./$output.scop.class.cnt
 fi
 exit ; 
 
