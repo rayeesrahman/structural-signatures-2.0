@@ -3,7 +3,9 @@ Leaner, faster, better structural signatures generator
 
 To start, untar the tar.gz file in the database folder and run structural-signatures-2.0.sh.
 
-Edit the `install.directory` file with the directory where structural signatures is located
+Next export the `homed` variable to be the installation directory of structural signatures, add it to your `.bashrc` if you want it automatically done, you can use the follow command on linux systems (Ubuntu, WSL) 
+
+`$ pwd | sed -E "s/(.+)/export homed='\1'/gi"  >> ~/.bashrc`
 
 ## Dependancies
 R >=3.0
