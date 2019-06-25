@@ -15,11 +15,41 @@ Otherwise just export the installation directory, using the following command, c
 
 `export homed='/path/to/structural-signatures-2.0/'  >> ~/.bashrc`
 
+## Dependancies
+R >=3.0
+
+Rscript
+
+Perl >=5.22.8
+
+Perl DBI
+
+Perl Parrallel Fork Manager
+
+sqlite >3.0
+
 ## Running structural-signatures-2.0.sh 
 
 Running `structural-signatures-2.0.sh` without any arguments will give the following: 
 
-![](https://imgur.com/EVFfFpO "log" )
+![](https://i.imgur.com/EVFfFpO.png  "log" )
+
+To run, specify the `-i`, `-t`, `n` and `-o` arguments. A quick example can be run using the following code (provided that all the dependancies are met): 
+
+`./structural-signatures-2.0.sh -i apoptosis.gene.list.head -t both -n gn -o test` 
+
+This will generate the following output if successful: 
+![](https://i.imgur.com/seaJzyN.png )
+
+And will generate the following output: (***note: outputs will change given how you specify the `-t` option*** )
+
+![](https://i.imgur.com/sX6xwYt.png) 
+
+Where: 
+1) `*-enrichment.csv` files are the structural signatures output 
+2) `*.info.csv` contain information about what structures were found for which proteins 
+  (ipr.info.csv has domain information and scop.structure.info has SCOPe structure information) 
+3) `*.uid.converted` contains the uniprot identifiers for the input gene list 
 
 ## Adding custom backgrounds to compare signatures against. 
 
@@ -58,29 +88,11 @@ Where:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign for the specific input structure type you are working with 
 
-Next make a directory here: `bin/files/backgrounds/**name**`  where **name** is the name of the backgrounds you assigned earlier (___everything must have the same name___)
+Next make a directory here: `bin/files/backgrounds/**name**`  where **name** is the name of the backgrounds you assigned earlier (___everything must have the same name___). Move all the files to that directory. 
 
-Move all the files to that directory. 
-
-To use the custom background just specify the `-r` option to `structural-signatures-2.0.sh` and input the **name** of the database.
-
-Structural-signatures will verify if the counts are in the correct format. 
+To use the custom background just specify the `-r` option to `structural-signatures-2.0.sh` and input the **name** of the database. Structural-signatures will verify if the counts are in the correct format. 
 
 For examples of how you should format your custom background counts look at the `bin/files/backgrounds/human_proteome/` directory files. 
-
-
-## Dependancies
-R >=3.0
-
-Rscript
-
-Perl >=5.22.8
-
-Perl DBI
-
-Perl Parrallel Fork Manager
-
-sqlite >3.0
 
 ## To Do: 
 - [ ] Make an installation script 
