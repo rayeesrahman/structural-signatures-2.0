@@ -53,7 +53,7 @@ if [[ -f  "./$output.found.genes" ]]
 then
 	printf "Generating enrichments.\n"
 else 
-	printf "\033[31mSomething went wrong, please check if the correct perl modules are available (DBI and parallel::forkmanager).\n\033[0m"
+	printf "\n\033[31mSomething went wrong, please check if the correct perl modules are available (DBI and parallel::forkmanager).\n\033[0m"
 	exit	
 fi 
 
