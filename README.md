@@ -29,26 +29,28 @@ cut -f1,2 -d"," **filename**-**structure**-enrichment.csv > **name**.background.
 
 Where:
 
-**filename** 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**filename** 
 
-is the output file name from structural signatures. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is the output file name from structural signatures. 
 
-**structure** 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**structure** 
 
-is the output structure type: *domain*, *fold*, *family*, *superfam* or *fold*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is the output structure type: *domain*, *fold*, *family*, *superfam* or *fold*
 
-**name** 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**name** 
 
-is the name of the background you give 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is the name of the background you give 
 
-**[ipr/scop]** 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[ipr/scop]** 
 
-if structure type is domain use ***ipr*** 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if structure type is domain use ***ipr*** 
 
 
-if fold, family, superfamily or fold use ***scop***
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if fold, family, superfamily or fold use ***scop***
 
-**[domain/family/superfam/fold]** assign for the specific input structure type you are working with 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[domain/family/superfam/fold]** 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign for the specific input structure type you are working with 
 
 Next make a directory here: `bin/files/backgrounds/**name**`  where **name** is the name of the backgrounds you assigned earlier (___everything must have the same name___)
 
