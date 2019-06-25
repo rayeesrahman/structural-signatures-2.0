@@ -17,9 +17,9 @@ Otherwise just export the installation directory, using the following command, c
 
 ## Adding custom backgrounds to compare signatures against. 
 
-Structural signatures generates a pvalues and fold changes by comparing the counted structures against the structure counts against the human proteome from SwissProt (~20,000 proteins)
+Structural signatures generates a pvalues and fold changes by comparing the counted structures against the structure counts from the human proteome defined by SwissProt (~20,000 proteins)
 
-You may want to compute structural enrichment against a background that is not the human proteome from SwissProt. 
+You may want to compute structural enrichment against a background that is a subset of human proteome from SwissProt. 
 
 To do this first you can run `structural-signatures-2.0.sh -t both` on the genelist you want to generate the background for. 
 
