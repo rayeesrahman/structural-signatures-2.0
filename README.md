@@ -1,7 +1,7 @@
 # structural-signatures-2.0
 ### Leaner, faster, better,
 
-## Structural Signatures Generator!
+## Structural Signatures Generator! (now with more emojis 🎉)
 
 To start, untar the tar.gz file in the database folder and run structural-signatures-2.0.sh.
 
@@ -15,7 +15,7 @@ Otherwise just export the installation directory, using the following command, c
 
 `export homed='/path/to/structural-signatures-2.0/'  >> ~/.bashrc`
 
-## Adding custom backgrounds to compare against 
+## Adding custom backgrounds to compare signatures against. 
 
 Structural signatures generates a pvalues and fold changes by comparing the counted structures against the structure counts against the human proteome from SwissProt (~20,000 proteins)
 
@@ -29,21 +29,34 @@ cut -f1,2 -d"," **filename**-**structure**-enrichment.csv > **name**.background.
 
 Where:
 
-**filename** is the output file name from structural signatures. 
+**filename** 
 
-**structure** is the output structure type: *domain*, *fold*, *family*, *superfam* or *fold*
+is the output file name from structural signatures. 
 
-**name** is the name of the background you give 
+**structure** 
 
-**[ipr/scop]** if structure type is domain use *ipr* if fold, family, superfamily or fold use *scop* 
+is the output structure type: *domain*, *fold*, *family*, *superfam* or *fold*
+
+**name** 
+
+is the name of the background you give 
+
+**[ipr/scop]** 
+
+if structure type is domain use ***ipr*** 
+
+
+if fold, family, superfamily or fold use ***scop***
 
 **[domain/family/superfam/fold]** assign for the specific input structure type you are working with 
 
-Next make a directory here: `bin/files/backgrounds/**name**`  where **name** is the name of the backgrounds you assigned early (___everything must have the same name___)
+Next make a directory here: `bin/files/backgrounds/**name**`  where **name** is the name of the backgrounds you assigned earlier (___everything must have the same name___)
 
 Move all the files to that directory. 
 
-To use the custom background just specify the `-r` option to `structural-signatures-2.0.sh` and input the **name** of the database. structural-signatures will verify if the counts are in the correct format. 
+To use the custom background just specify the `-r` option to `structural-signatures-2.0.sh` and input the **name** of the database.
+
+Structural-signatures will verify if the counts are in the correct format. 
 
 For examples of how you should format your custom background counts look at the `bin/files/backgrounds/human_proteome/` directory files. 
 
