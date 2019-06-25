@@ -53,7 +53,7 @@ Where:
 
 ## Adding custom backgrounds to compare signatures against. 
 
-Structural signatures generates a pvalues and fold changes by comparing the counted structures against the structure counts from the human proteome defined by SwissProt (~20,000 proteins)
+Structural signatures generates pvalues and fold changes by comparing the counted structures against the structure counts from the human proteome defined by SwissProt (~20,000 proteins)
 
 You may want to compute structural enrichment against a background that is a subset of human proteome from SwissProt. 
 
