@@ -61,7 +61,7 @@ To do this first you can run `structural-signatures-2.0.sh -t both` on the genel
 
 Next for each of the structral signature files (`*-enrichments.csv`) run the following command to get the structure counts: 
 
-cut -f1,2 -d"," **filename**-**structure**-enrichment.csv > **name**.background.**[ipr/scop]**.**[domain/family/superfam/fold]**.csv
+`cut -f1,2 -d","` **`filename`**`-`**`structure`**`-enrichment.csv > `**`name`**`.background.`**`[ipr/scop]`**`.`**`[domain/family/superfam/fold]`**`.csv`
 
 Where:
 
