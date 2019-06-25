@@ -15,6 +15,12 @@ Otherwise just export the installation directory, using the following command, c
 
 `export homed='/path/to/structural-signatures-2.0/'  >> ~/.bashrc`
 
+## Running structural-signatures-2.0.sh 
+
+Running `structural-signatures-2.0.sh` without any arguments will give the following: 
+
+![](https://imgur.com/EVFfFpO "log" )
+
 ## Adding custom backgrounds to compare signatures against. 
 
 Structural signatures generates a pvalues and fold changes by comparing the counted structures against the structure counts from the human proteome defined by SwissProt (~20,000 proteins)
