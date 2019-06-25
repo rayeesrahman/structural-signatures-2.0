@@ -60,6 +60,14 @@ then
 	exit  1
 fi
 
+if [[ -f "$input" ]]
+then
+	printf "" ; 
+else 
+	printf "\033[31mNo such file:\033[0m $input\n" ;
+	exit 
+fi 
+
 if [ -z $ref_db ] 
 then 
 	printf "Using default human proteome background structure counts at:\n\033[32m\t$homed/bin/files/backgrounds/human_proteome/\n\033[0m\n"
