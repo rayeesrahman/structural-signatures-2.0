@@ -49,11 +49,14 @@ then
 fi
 
 $homed/bin/scripts/get_struct_from_db.pl $homed/database/structure_database.db $type $name $homed/bin/files/ParentChildTreeFile.txt $input $output $homed/bin/files/available_uniprot_ids.csv yes #2> /dev/null
-if [[ -f  ./$output.found.genes ]]
-then 
-	printf "Something went wrong, please check if the correct perl modules are available."
-	exit 
+if [[ -f  "./$output.found.genes" ]]
+then
+	printf "Generating enrichments.\n"
+else 
+	printf "\033[31mSomething went wrong, please check if the correct perl modules are available (DBI and parallel::forkmanager).\n\033[0m"
+	exit	
 fi 
+
 numgenes=$( cat ./$output.found.genes ) 
 if [ $type == "domain" ] 
 then
